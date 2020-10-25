@@ -11,7 +11,12 @@ int iFlag;
 bool bEnableWeaponGlow;
 
 ConVar sv_competitive_official_5v5,
-	mp_weapons_glow_on_ground;
+	mp_weapons_glow_on_ground,
+	sv_parallel_send,
+	sv_parallel_sendsnapshot,
+	sv_parallel_packentities,
+	sm_esl_adminesp_flag,
+	sm_esl_adminesp_weapons_glow_on_ground;
 
 public Plugin myinfo = {
 	name        = "CS:GO Esl Admin ESP (mmcs.pro)",
@@ -25,24 +30,18 @@ public void OnPluginStart() {
 	if(GetEngineVersion() != Engine_CSGO)
 		SetFailState("This plugin works only on CS:GO. Disabling plugin...");
 
-	if(GetConVarInt(FindConVar("sv_parallel_send")) == 1)
-		SetFailState("Please set convar sv_parallel_send to 0. Disabling plugin...");
-	if(GetConVarInt(FindConVar("sv_parallel_sendsnapshot")) == 1)
-		SetFailState("Please set convar sv_parallel_sendsnapshot to 0. Disabling plugin...");
-	if(GetConVarInt(FindConVar("sv_parallel_packentities")) == 1)
-		SetFailState("Please set convar sv_parallel_packentities to 0. Disabling plugin...");
-
 	CreateConVar("sm_esl_adminesp_version", PLUGIN_VERSION, "Version of CS:GO Esl Admin ESP", FCVAR_SPONLY|FCVAR_REPLICATED|FCVAR_NOTIFY);
 
-	ConVar CVAR;
-	(CVAR = CreateConVar("sm_esl_adminesp_flag", "d", "Admin flag, blank=any flag", FCVAR_NOTIFY)).AddChangeHook(OnCvarChanged);
-	OnCvarChanged(CVAR, NULL_STRING, NULL_STRING);
-	(CVAR = CreateConVar("sm_esl_adminesp_weapons_glow_on_ground", "1", "Enable glow weapons on ground", 0, true, 0.0, true, 1.0)).AddChangeHook(OnCvarChanged);
-	OnCvarChanged(CVAR, NULL_STRING, NULL_STRING);
+	(sm_esl_adminesp_flag = CreateConVar("sm_esl_adminesp_flag", "d", "Admin flag, blank=any flag", FCVAR_NOTIFY)).AddChangeHook(OnCvarChanged);
+	(sm_esl_adminesp_weapons_glow_on_ground = CreateConVar("sm_esl_adminesp_weapons_glow_on_ground", "1", "Enable glow weapons on ground", 0, true, 0.0, true, 1.0)).AddChangeHook(OnCvarChanged);
 	AutoExecConfig(true, "esl_admin_esp");
 
 	sv_competitive_official_5v5 = FindConVar("sv_competitive_official_5v5");
 	mp_weapons_glow_on_ground = FindConVar("mp_weapons_glow_on_ground");
+
+	(sv_parallel_send = FindConVar("sv_parallel_send")).AddChangeHook(OnCvarChanged);
+	(sv_parallel_sendsnapshot = FindConVar("sv_parallel_sendsnapshot")).AddChangeHook(OnCvarChanged);
+	(sv_parallel_packentities = FindConVar("sv_parallel_packentities")).AddChangeHook(OnCvarChanged);
 
 	AutoExecConfig(true, "esl_admin_esp");
 	
@@ -58,9 +57,7 @@ public void OnClientDisconnect(int client) {
 }
 
 public void OnCvarChanged(ConVar convar, const char[] oldValue, const char[] newValue) {
-	char convar_name[32];
-	convar.GetName(convar_name, sizeof(convar_name));
-	if (StrEqual(convar_name, "sm_esl_adminesp_flag")) {
+	if (convar == sm_esl_adminesp_flag) {
 		char szFlag[16];
 		convar.GetString(szFlag, sizeof(szFlag));
 		iFlag = ReadFlagString(szFlag);
@@ -72,8 +69,14 @@ public void OnCvarChanged(ConVar convar, const char[] oldValue, const char[] new
 			}
 		}
 
-	} else if (StrEqual(convar_name, "sm_esl_adminesp_weapons_glow_on_ground")) {
+	} else if (convar == sm_esl_adminesp_weapons_glow_on_ground) {
 		bEnableWeaponGlow = convar.BoolValue;
+	} else if (convar == sv_parallel_send && StringToInt(newValue) == 1) {
+		convar.IntValue = 0; 
+	} else if (convar == sv_parallel_sendsnapshot && StringToInt(newValue) == 1) {
+		convar.IntValue = 0; 
+	} else if (convar == sv_parallel_packentities && StringToInt(newValue) == 1) {
+		convar.IntValue = 0; 
 	}
 }
 
