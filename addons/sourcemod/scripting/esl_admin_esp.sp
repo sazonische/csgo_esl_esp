@@ -4,7 +4,6 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define IsValidClient(%0) 				(1 <= %0 <= MaxClients && IsClientInGame(%0) && !IsFakeClient(%0))
 #define PLUGIN_VERSION "2.9"
 
 int iFlag;
@@ -138,4 +137,8 @@ public Action Set_Esp(int entity, const char[] PropName, int &iValue, int elemen
 		return Plugin_Changed;
 	}
 	return Plugin_Continue;
+}
+
+stock bool IsValidClient(int client) {
+	return 0 < client && client <= MaxClients && IsClientInGame(client) && !IsFakeClient(client);
 }
