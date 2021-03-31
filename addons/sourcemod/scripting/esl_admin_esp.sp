@@ -4,7 +4,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define PLUGIN_VERSION "3.0"
+#define PLUGIN_VERSION "3.1"
 
 int iFlag;
 bool bEnableWeaponGlow;
@@ -39,8 +39,11 @@ public void OnPluginStart() {
 	mp_weapons_glow_on_ground = FindConVar("mp_weapons_glow_on_ground");
 
 	(sv_parallel_send = FindConVar("sv_parallel_send")).AddChangeHook(OnCvarChanged);
+	OnCvarChanged(sv_parallel_send, NULL_STRING, NULL_STRING);
 	(sv_parallel_sendsnapshot = FindConVar("sv_parallel_sendsnapshot")).AddChangeHook(OnCvarChanged);
+	OnCvarChanged(sv_parallel_sendsnapshot, NULL_STRING, NULL_STRING);
 	(sv_parallel_packentities = FindConVar("sv_parallel_packentities")).AddChangeHook(OnCvarChanged);
+	OnCvarChanged(sv_parallel_packentities, NULL_STRING, NULL_STRING);
 
 	AutoExecConfig(true, "esl_admin_esp");
 	
