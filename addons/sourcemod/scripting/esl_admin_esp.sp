@@ -4,7 +4,7 @@
 #pragma semicolon 1
 #pragma newdecls required
 
-#define PLUGIN_VERSION "2.9"
+#define PLUGIN_VERSION "3.0"
 
 int iFlag;
 bool bEnableWeaponGlow;
