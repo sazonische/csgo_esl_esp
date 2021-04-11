@@ -32,7 +32,9 @@ public void OnPluginStart() {
 	CreateConVar("sm_esl_adminesp_version", PLUGIN_VERSION, "Version of CS:GO Esl Admin ESP", FCVAR_SPONLY|FCVAR_REPLICATED|FCVAR_NOTIFY);
 
 	(sm_esl_adminesp_flag = CreateConVar("sm_esl_adminesp_flag", "d", "Admin flag, blank=any flag", FCVAR_NOTIFY)).AddChangeHook(OnCvarChanged);
+	OnCvarChanged(sm_esl_adminesp_flag, NULL_STRING, NULL_STRING);
 	(sm_esl_adminesp_weapons_glow_on_ground = CreateConVar("sm_esl_adminesp_weapons_glow_on_ground", "1", "Enable glow weapons on ground", 0, true, 0.0, true, 1.0)).AddChangeHook(OnCvarChanged);
+	OnCvarChanged(sm_esl_adminesp_weapons_glow_on_ground, NULL_STRING, NULL_STRING);
 	AutoExecConfig(true, "esl_admin_esp");
 
 	sv_competitive_official_5v5 = FindConVar("sv_competitive_official_5v5");
